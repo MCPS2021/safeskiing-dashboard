@@ -1,0 +1,24 @@
+/* Color list for progress bars */
+.green {
+    color: #28a745
+}
+
+.green .progress-bar {
+    background-color: #28a745 !important
+}
+
+.yellow {
+    color: #ffc107
+}
+
+.yellow .progress-bar {
+    background-color: #ffc107 !important
+}
+
+.red {
+    color: #dc3545
+}
+
+.red .progress-bar {
+    background-color: #dc3545 !important
+}
