@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, TIMESTAMP, ForeignKey, create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, backref, sessionmaker, joinedload
+from sqlalchemy.orm import relationship, backref, sessionmaker, joinedload, scoped_session
 from datetime import datetime
 import random
 import string
@@ -76,8 +76,7 @@ class Skiipass(Base):
         return dict([(k, v) for k, v in self.__dict__.items() if k[0] != "_"])
 
 # Creates a new session to the database by using the engine we described.
-Session = sessionmaker(bind=engine)
-session = Session()
+session = scoped_session(sessionmaker(autocommit=False, autoflush=False,bind=engine))
 
 if __name__ == '__main__':
     # Creates a new session to the database by using the engine we described.
