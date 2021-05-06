@@ -29,6 +29,7 @@ def get_total_people():
     from_instant = request.args.get("from")
     to_instant = request.args.get("to")
 
+
     print(station_id, from_instant, to_instant)
 
     query = session.query(StationsHistory)
@@ -40,16 +41,26 @@ def get_total_people():
         query = query.filter_by(station_id = station_id)
 
     if from_instant is not None:
+        try:
+            from_instant = int(from_instant)
+        except:
+            return "from instant is not a integer", 400
+
         if from_instant > int(datetime.now().timestamp()):
             return "from_instant in the future", 400
         query = query.filter(StationsHistory.instant > datetime.utcfromtimestamp(from_instant))
 
     if to_instant is not None:
-        if to_instant < from_instant:
+        try:
+            to_instant = int(to_instant)
+        except:
+            return "to instant is not a integer", 400
+
+        if from_instant is not None and to_instant < from_instant:
             return "from_instant is greater than to_instant", 400
+
         query = query.filter(StationsHistory.instant < datetime.utcfromtimestamp(to_instant))
 
     current_app.logger.debug(query)
-    print(query.all())
 
     return jsonify([record.serialize() for record in query.all()])
