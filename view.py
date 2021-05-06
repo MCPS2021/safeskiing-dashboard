@@ -1,8 +1,8 @@
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 from flask import Blueprint, current_app, render_template, jsonify, request
 
-from database import Stations, LastUpdate, StationsHistory, session
+from database import Stations, LastUpdate, StationsHistory, session, Skiipass
 
 view = Blueprint("views", __name__)
 
@@ -64,3 +64,40 @@ def get_total_people():
     current_app.logger.debug(query)
 
     return jsonify([record.serialize() for record in query.all()])
+
+@view.route("/api/score/", methods=['GET'])
+def get_score():
+    '''
+    LOWER SCORE WIN !!!
+    :return:
+    score
+    '''
+    uuid = request.args.get("uuid")
+    day = request.args.get("day")
+
+    current_app.logger.debug(uuid)
+
+    query = session.query(Skiipass)
+    if uuid is not None:
+        query = query.filter_by(uuid = uuid)
+
+    if day is None:
+        day = date.today()
+    else:
+        try:
+            day = datetime.strptime(day, "%Y-%m-%d")
+        except:
+            return "Unable to parse date, need format YYYY-mm-dd", 400
+
+    skipass_records = query.filter(Skiipass.departure_time >= day).filter(Skiipass.departure_time < (day + timedelta(days=1))).all()
+
+    result = {}
+    for record in skipass_records:
+        if record.uuid in result:
+            result[record.uuid] += int((record.departure_time - record.arrival_time).total_seconds() * record.total_people)
+        else:
+            result[record.uuid] = int((record.departure_time - record.arrival_time).total_seconds() * record.total_people)
+
+    current_app.logger.debug(result)
+
+    return jsonify(result)
