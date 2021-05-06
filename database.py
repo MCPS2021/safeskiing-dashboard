@@ -26,6 +26,8 @@ class Stations(Base):
         return "<Stations(id='%s', name='%s', warning_threshold='%s', danger_threshold='%s')>" % (
             self.id, self.name, self.warning_threshold, self.danger_threshold)
 
+    def serialize(self):
+        return dict([(k, v) for k, v in self.__dict__.items() if k[0] != "_"])
 
 class StationsHistory(Base):
     __tablename__ = 'stations_history'
@@ -38,6 +40,8 @@ class StationsHistory(Base):
         return "<StationsHistory(id='%s', station_id='%s', instant='%s', total_people='%s')>" % (
             self.id, self.station_id, self.instant, self.total_people)
 
+    def serialize(self):
+        return dict([(k, v) for k, v in self.__dict__.items() if k[0] != "_"])
 
 class LastUpdate(Base):
     __tablename__ = 'lastupdate'
@@ -55,6 +59,8 @@ class LastUpdate(Base):
         return "<LastUpdate(uuid='%s', last_battery='%s', last_update='%s', last_position='%s', last_position_change='%s', total_people='%s')>" % (
             self.uuid, self.last_battery, self.last_update, self.last_position, self.last_position_change, self.total_people)
 
+    def serialize(self):
+        return dict([(k, v) for k, v in self.__dict__.items() if k[0] != "_"])
 
 class Skiipass(Base):
     __tablename__ = 'skiipass'
@@ -71,6 +77,8 @@ class Skiipass(Base):
         return "<Skiipass(name='%s', fullname='%s', password'%s')>" % (
             self.name, self.fullname, self.password)
 
+    def serialize(self):
+        return dict([(k, v) for k, v in self.__dict__.items() if k[0] != "_"])
 
 if __name__ == '__main__':
     # Creates a new session to the database by using the engine we described.

@@ -12,4 +12,6 @@ def index():
     return render_template("index.html")
 
 
-
+@view.route("/api/skipass", methods=['GET'])
+def get_all_skipass():
+    session = current_app.config['db_session']
