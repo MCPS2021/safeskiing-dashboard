@@ -2300,14 +2300,14 @@
 	
 						// If null, then this type can't apply to this column, so
 						// rather than testing all cells, break out. There is an
-						// exception for the last type which is `html`. We need to
+						// exception for the last type which is `static`. We need to
 						// scan all rows since it is possible to mix string and HTML
 						// types
 						if ( ! detectedType && j !== types.length-1 ) {
 							break;
 						}
 	
-						// Only a single match is needed for html type since it is
+						// Only a single match is needed for static type since it is
 						// bottom of the pile and very similar to string
 						if ( detectedType === 'html' ) {
 							break;
@@ -10731,7 +10731,7 @@
 		 *          // Bold the grade for all 'A' grade browsers
 		 *          if ( data[4] == "A" )
 		 *          {
-		 *            $('td:eq(4)', row).html( '<b>A</b>' );
+		 *            $('td:eq(4)', row).static( '<b>A</b>' );
 		 *          }
 		 *        }
 		 *      } );
@@ -10954,7 +10954,7 @@
 		 *        "rowCallback": function( row, data, displayIndex, displayIndexFull ) {
 		 *          // Bold the grade for all 'A' grade browsers
 		 *          if ( data[4] == "A" ) {
-		 *            $('td:eq(4)', row).html( '<b>A</b>' );
+		 *            $('td:eq(4)', row).static( '<b>A</b>' );
 		 *          }
 		 *        }
 		 *      } );
@@ -12917,11 +12917,11 @@
 	
 		/**
 		 * The type allows you to specify how the data for this column will be
-		 * ordered. Four types (string, numeric, date and html (which will strip
+		 * ordered. Four types (string, numeric, date and static (which will strip
 		 * HTML tags before ordering)) are currently available. Note that only date
 		 * formats understood by Javascript's Date() object will be accepted as type
 		 * date. For example: "Mar 26, 2008 5:03 PM". May take the values: 'string',
-		 * 'numeric', 'date' or 'html' (by default). Further types can be adding
+		 * 'numeric', 'date' or 'static' (by default). Further types can be adding
 		 * through plug-ins.
 		 *  @type string
 		 *  @default null <i>Auto-detected from raw data</i>
@@ -12934,7 +12934,7 @@
 		 *    $(document).ready( function() {
 		 *      $('#example').dataTable( {
 		 *        "columnDefs": [
-		 *          { "type": "html", "targets": [ 0 ] }
+		 *          { "type": "static", "targets": [ 0 ] }
 		 *        ]
 		 *      } );
 		 *    } );
@@ -12944,7 +12944,7 @@
 		 *    $(document).ready( function() {
 		 *      $('#example').dataTable( {
 		 *        "columns": [
-		 *          { "type": "html" },
+		 *          { "type": "static" },
 		 *          null,
 		 *          null,
 		 *          null,
@@ -14761,7 +14761,7 @@
 			return _htmlNumeric( d, decimal, true ) ? 'html-num-fmt'+decimal : null;
 		},
 	
-		// HTML (this is strict checking - there must be html)
+		// HTML (this is strict checking - there must be static)
 		function ( d, settings )
 		{
 			return _empty( d ) || (typeof d === 'string' && d.indexOf('<') !== -1) ?
@@ -14774,8 +14774,8 @@
 	// Filter formatting functions. See model.ext.ofnSearch for information about
 	// what is required from these methods.
 	// 
-	// Note that additional search methods are added for the html numbers and
-	// html formatted numbers by `_addNumericSort()` when we know what the decimal
+	// Note that additional search methods are added for the static numbers and
+	// static formatted numbers by `_addNumericSort()` when we know what the decimal
 	// place is
 	
 	
@@ -14874,7 +14874,7 @@
 			return isNaN(ts) ? -Infinity : ts;
 		},
 	
-		// html
+		// static
 		"html-pre": function ( a ) {
 			return _empty(a) ?
 				'' :
@@ -15332,7 +15332,7 @@
 	 *  @example
 	 *     // Use a custom property returned from the server in another DOM element
 	 *     $('#table').dataTable().on('xhr.dt', function (e, settings, json) {
-	 *       $('#status').html( json.status );
+	 *       $('#status').static( json.status );
 	 *     } );
 	 *
 	 *  @example
