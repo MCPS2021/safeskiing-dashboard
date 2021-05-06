@@ -21,8 +21,6 @@ def create_app():
                        "127.0.0.1:3308" + "/" +
                        "safeskiing" + "?charset=utf8mb4")
 
-    Session = sessionmaker(bind=engine)
-    app.config['db_session'] = Session()
 
     app.register_blueprint(view)
 

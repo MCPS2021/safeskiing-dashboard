@@ -9,9 +9,8 @@ import string
 engine = create_engine("mysql+pymysql://" +
                        "root" + ":" +
                        "root" + "@" +
-                       "127.0.0.1:3008" + "/" +
+                       "127.0.0.1:3308" + "/" +
                        "safeskiing" + "?charset=utf8mb4")
-
 Base = declarative_base()
 
 
@@ -33,12 +32,8 @@ class StationsHistory(Base):
     __tablename__ = 'stations_history'
     station_id = Column(Integer, ForeignKey(Stations.id), primary_key=True)
     station = relationship("Stations", backref=backref('stations_history'))
-    instant = Column(TIMESTAMP, nullable=False)
+    instant = Column(TIMESTAMP, nullable=False, primary_key=True)
     total_people = Column(Integer, nullable=False)
-
-    def __repr__(self):
-        return "<StationsHistory(id='%s', station_id='%s', instant='%s', total_people='%s')>" % (
-            self.id, self.station_id, self.instant, self.total_people)
 
     def serialize(self):
         return dict([(k, v) for k, v in self.__dict__.items() if k[0] != "_"])
@@ -79,6 +74,10 @@ class Skiipass(Base):
 
     def serialize(self):
         return dict([(k, v) for k, v in self.__dict__.items() if k[0] != "_"])
+
+# Creates a new session to the database by using the engine we described.
+Session = sessionmaker(bind=engine)
+session = Session()
 
 if __name__ == '__main__':
     # Creates a new session to the database by using the engine we described.

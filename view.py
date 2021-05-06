@@ -2,36 +2,34 @@ from datetime import datetime
 
 from flask import Blueprint, current_app, render_template, jsonify, request
 
-from database import Stations, LastUpdate, StationsHistory
+from database import Stations, LastUpdate, StationsHistory, session
 
 view = Blueprint("views", __name__)
 
 
 @view.route("/", methods=["GET"])
 def index():
-    session = current_app.config['db_session']
     registered_stations = session.query(Stations).all()
     return render_template("index.html")
 
 
 @view.route("/api/skipass", methods=['GET'])
 def get_all_skipass():
-    session = current_app.config['db_session']
     return jsonify([skipass.serialize() for skipass in session.query(LastUpdate).all()])
 
 
 @view.route("/api/stations", methods=['GET'])
 def get_all_stations():
-    session = current_app.config['db_session']
     return jsonify([skipass.serialize() for skipass in session.query(Stations).all()])
 
 
 @view.route("/api/totalPeople/", methods=['GET'])
 def get_total_people():
-    session = current_app.config['db_session']
     station_id = request.args.get("station_id")
     from_instant = request.args.get("from")
     to_instant = request.args.get("to")
+
+    print(station_id, from_instant, to_instant)
 
     query = session.query(StationsHistory)
 
@@ -39,7 +37,7 @@ def get_total_people():
         if session.query(Stations).get(station_id) is None:
             return "station does not exists", 404
 
-        query = query.filter_by(StationsHistory.station_id)
+        query = query.filter_by(station_id = station_id)
 
     if from_instant is not None:
         if from_instant > int(datetime.now().timestamp()):
@@ -50,5 +48,8 @@ def get_total_people():
         if to_instant < from_instant:
             return "from_instant is greater than to_instant", 400
         query = query.filter(StationsHistory.instant < datetime.utcfromtimestamp(to_instant))
+
+    current_app.logger.debug(query)
+    print(query.all())
 
     return jsonify([record.serialize() for record in query.all()])
