@@ -1,6 +1,7 @@
 from datetime import datetime, date, timedelta
 
 from flask import Blueprint, current_app, render_template, jsonify, request
+from sqlalchemy import text
 
 from database import Stations, LastUpdate, StationsHistory, session, Skiipass
 
@@ -25,7 +26,9 @@ def get_all_skipass():
         except:
             return "Unable to parse date, need format YYYY-mm-dd", 400
 
-    return jsonify([skipass.serialize() for skipass in session.query(LastUpdate).filter(LastUpdate.last_update > day).filter(LastUpdate.last_update < day + timedelta(days=1)).all()])
+    return jsonify([skipass.serialize() for skipass in
+                    session.query(LastUpdate).filter(LastUpdate.last_update > day).filter(
+                        LastUpdate.last_update < day + timedelta(days=1)).all()])
 
 
 @view.route("/api/stations", methods=['GET'])
@@ -38,8 +41,7 @@ def get_total_people():
     station_id = request.args.get("station_id")
     from_instant = request.args.get("from")
     to_instant = request.args.get("to")
-
-    print(station_id, from_instant, to_instant)
+    last = request.args.get("last")
 
     query = session.query(StationsHistory)
 
@@ -47,7 +49,7 @@ def get_total_people():
         if session.query(Stations).get(station_id) is None:
             return "station does not exists", 404
 
-        query = query.filter_by(station_id = station_id)
+        query = query.filter_by(station_id=station_id)
 
     if from_instant is not None:
         try:
@@ -72,7 +74,17 @@ def get_total_people():
 
     current_app.logger.debug(query)
 
+    if last is not None and (last == 'true' or last == 'True'):
+        sql = text(
+            "SELECT station_id as s_id,instant as i,total_people as tp FROM `stations_history` GROUP BY station_id,instant,total_people HAVING instant = (SELECT instant FROM `stations_history` WHERE station_id = s_id ORDER BY instant DESC LIMIT 1) ")
+        db_result = session.execute(sql)
+        result = []
+        for row in db_result:
+            result.append({'instant': row[1], 'station_id': row[0], 'total_people': row[2]})
+        return jsonify(result)
+
     return jsonify([record.serialize() for record in query.all()])
+
 
 @view.route("/api/score/", methods=['GET'])
 def get_score():
@@ -88,7 +100,7 @@ def get_score():
 
     query = session.query(Skiipass)
     if uuid is not None:
-        query = query.filter_by(uuid = uuid)
+        query = query.filter_by(uuid=uuid)
 
     if day is None:
         day = date.today()
@@ -98,14 +110,17 @@ def get_score():
         except:
             return "Unable to parse date, need format YYYY-mm-dd", 400
 
-    skipass_records = query.filter(Skiipass.departure_time >= day).filter(Skiipass.departure_time < (day + timedelta(days=1))).all()
+    skipass_records = query.filter(Skiipass.departure_time >= day).filter(
+        Skiipass.departure_time < (day + timedelta(days=1))).all()
 
     result = {}
     for record in skipass_records:
         if record.uuid in result:
-            result[record.uuid] += int((record.departure_time - record.arrival_time).total_seconds() * record.total_people)
+            result[record.uuid] += int(
+                (record.departure_time - record.arrival_time).total_seconds() * record.total_people)
         else:
-            result[record.uuid] = int((record.departure_time - record.arrival_time).total_seconds() * record.total_people)
+            result[record.uuid] = int(
+                (record.departure_time - record.arrival_time).total_seconds() * record.total_people)
 
     current_app.logger.debug(result)
 
