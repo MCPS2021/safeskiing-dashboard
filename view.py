@@ -15,7 +15,17 @@ def index():
 
 @view.route("/api/skipass", methods=['GET'])
 def get_all_skipass():
-    return jsonify([skipass.serialize() for skipass in session.query(LastUpdate).all()])
+    day = request.args.get("day")
+
+    if day is None:
+        day = date.today()
+    else:
+        try:
+            day = datetime.strptime(day, "%Y-%m-%d")
+        except:
+            return "Unable to parse date, need format YYYY-mm-dd", 400
+
+    return jsonify([skipass.serialize() for skipass in session.query(LastUpdate).filter(LastUpdate.last_update > day).filter(LastUpdate.last_update < day + timedelta(days=1)).all()])
 
 
 @view.route("/api/stations", methods=['GET'])
@@ -28,7 +38,6 @@ def get_total_people():
     station_id = request.args.get("station_id")
     from_instant = request.args.get("from")
     to_instant = request.args.get("to")
-
 
     print(station_id, from_instant, to_instant)
 
