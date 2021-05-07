@@ -125,3 +125,7 @@ def get_score():
     current_app.logger.debug(result)
 
     return jsonify(result)
+
+@view.route("/api/cards", methods=['GET'])
+def cards_constructor():
+    return "test"
