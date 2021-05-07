@@ -25,10 +25,10 @@ def get_all_skipass():
             day = datetime.strptime(day, "%Y-%m-%d")
         except:
             return "Unable to parse date, need format YYYY-mm-dd", 400
-
-    return jsonify([skipass.serialize() for skipass in
+    ret = [skipass.serialize() for skipass in
                     session.query(LastUpdate).filter(LastUpdate.last_update > day).filter(
-                        LastUpdate.last_update < day + timedelta(days=1)).all()])
+                        LastUpdate.last_update < day + timedelta(days=1)).all()]
+    return jsonify({"data": ret})
 
 
 @view.route("/api/stations", methods=['GET'])
