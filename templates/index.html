@@ -12,6 +12,8 @@
         <link href="/static/css/styles.css" rel="stylesheet" />
         <link href="/static/css/app.css" rel="stylesheet" />
         <link rel="stylesheet" type="text/css" href="/static/vendor/DataTables/DataTables-1.10.24/css/jquery.dataTables.min.css"/>
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
     </head>
     <body>
         <!-- Navigation-->
@@ -25,12 +27,46 @@
             <div class="text-center">
                 <h1 class="mt-5">Manager</h1>
             </div>
-            <div class="pt-5">
-                <h2>Alert</h2>
-                <ul>
-                    <li>Station 01 is too crowded!</li>
-                    <li>#2183973488321 is low on battery!</li>
-                </ul>
+            <div class="row">
+				<div class="col-md-3">
+				  <div class="card-counter primary">
+					<i class="fa fa-code-fork"></i>
+					<span class="count-numbers">3</span>
+					<span class="count-name">Stations</span>
+				  </div>
+				</div>
+
+				<div class="col-md-3">
+				  <div class="card-counter danger">
+					<i class="fa fa-battery-1"></i>
+					<span class="count-numbers">1</span>
+					<span class="count-name">Low Battery</span>
+				  </div>
+				</div>
+
+				<div class="col-md-3">
+				  <div class="card-counter success">
+					<i class="fa fa-rocket"></i>
+					<span class="count-numbers">238</span>
+					<span class="count-name">Lifts</span>
+				  </div>
+				</div>
+
+				<div class="col-md-3">
+				  <div class="card-counter info">
+					<i class="fa fa-users"></i>
+					<span class="count-numbers">35</span>
+					<span class="count-name">Users</span>
+				  </div>
+				</div>
+			</div>
+			<div class="pt-2">
+				<div class="alert alert-warning">
+					Station 01 is <strong>too crowded</strong>!
+				</div>
+				<div class="alert alert-danger">
+					#2183973488321 has <strong>15%</strong> of battery
+				</div>
             </div>
             <div class="pt-5">
                 <h2>Devices Status</h2>
@@ -38,7 +74,7 @@
                     <thead>
                         <tr>
                             <th>UUID</th>
-                            <th>Position</th>
+                            <th>Last Position</th>
                             <th>Battery</th>
                         </tr>
                     </thead>
@@ -73,26 +109,31 @@
                     </tbody>
                 </table>
             </div>
-            <div class="pt-5">
-                <h2>Station Status</h2>
-                <table id="stations" class="display" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>Station</th>
-                            <th>People</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Station 01</td>
-                            <td class="green">6</td>
-                        </tr>
-                        <tr>
-                            <td>Station 02</td>
-                            <td class="red">57</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="row pt-5">
+				<div class="col-md-6">
+					<h2>Station Status</h2>
+					<table id="stations" class="display" style="width:100%">
+						<thead>
+							<tr>
+								<th>Station</th>
+								<th>People</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Station 01</td>
+								<td class="green">6</td>
+							</tr>
+							<tr>
+								<td>Station 02</td>
+								<td class="red">57</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="col-md-6">
+					 <div id="map" style="height:300px"></div>
+				</div>
             </div>
             <div class=" pt-5">
                 <h2>COVID-Safe Ranking</h2>
@@ -107,6 +148,7 @@
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
         <script type="text/javascript" src="/static/vendor/DataTables/datatables.min.js"></script>
+		<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
         <!-- Core theme JS-->
         <script src="/static/js/scripts.js"></script>
         <script>
@@ -120,7 +162,10 @@
                     order: [[1, "desc"]]
                 });
             } );
-
+			
+			var map = L.map('map').setView([51.505, -0.09], 13);
+			L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
+		
             function get_progressbar(value){
                 return '<div class="progress"><div class="progress-bar" role="progressbar" style="width: '+value+'%" aria-valuenow="'+value+'" aria-valuemin="0" aria-valuemax="100"></div></div>';
             }
