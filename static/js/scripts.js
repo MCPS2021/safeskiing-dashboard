@@ -52,9 +52,10 @@ $(document).ready(function() {
     });
 
 } );
+
 var markers = [];
 var map = L.map('map').setView([51.505, -0.09], 13);
-L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
+L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', { attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
 
 function render_progressbar(value, x, obj){
     if (value === '-1'){
@@ -72,7 +73,7 @@ function render_text(value, x, obj){
     }
     //other things
     (color === "red") ? alert_manager(obj.id, true) : alert_manager(obj.id, false);
-    addToMap(obj.lat, obj.lon);
+    addToMap(obj, value, color);
     return '<span class="'+color+'">'+value+'</span>';
 }
 
@@ -85,8 +86,13 @@ function alert_manager(station, display){
     }
 }
 
-function addToMap(lat, lon){
-    let marker = L.marker([lat, lon]).addTo(map);
+function addToMap(obj, value, color){
+    //let marker = L.marker([lat, lon]).addTo(map);
+    let marker = L.marker([obj.lat, obj.lon], {
+                    icon: new L.AwesomeNumberMarkers({
+                        number: value,
+                        markerColor: color
+                  })}).bindTooltip("Station "+obj.id).addTo(map);
     markers.push(marker);
     let group = new L.featureGroup(markers);
     map.fitBounds(group.getBounds());
