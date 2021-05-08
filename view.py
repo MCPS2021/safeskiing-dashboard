@@ -41,6 +41,8 @@ def get_all_stations():
         for r in result:
             if r['id'] == row[0]:
                 r['totalPeople'] = row[2]
+            else:
+                r['totalPeople'] = 0
 
     return jsonify(result)
 
