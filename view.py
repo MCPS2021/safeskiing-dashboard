@@ -33,8 +33,16 @@ def get_all_skipass():
 
 @view.route("/api/stations", methods=['GET'])
 def get_all_stations():
-    return jsonify([skipass.serialize() for skipass in session.query(Stations).all()])
+    result = [skipass.serialize() for skipass in session.query(Stations).all()]
+    sql = text(
+        "SELECT station_id as s_id,instant as i,total_people as tp FROM `stations_history` GROUP BY station_id,instant,total_people HAVING instant = (SELECT instant FROM `stations_history` WHERE station_id = s_id ORDER BY instant DESC LIMIT 1) ")
+    db_result = session.execute(sql)
+    for row in db_result:
+        for r in result:
+            if r['id'] == row[0]:
+                r['totalPeople'] = row[2]
 
+    return jsonify(result)
 
 @view.route("/api/totalPeople/", methods=['GET'])
 def get_total_people():
