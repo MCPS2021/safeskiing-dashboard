@@ -33,16 +33,23 @@ def get_all_skipass():
 
 @view.route("/api/stations", methods=['GET'])
 def get_all_stations():
-    result = [skipass.serialize() for skipass in session.query(Stations).all()]
+    #result = [skipass.serialize() for skipass in session.query(Stations).all()]
+    stations = session.query(Stations).all()
     sql = text(
         "SELECT station_id as s_id,instant as i,total_people as tp FROM `stations_history` GROUP BY station_id,instant,total_people HAVING instant = (SELECT instant FROM `stations_history` WHERE station_id = s_id ORDER BY instant DESC LIMIT 1) ")
     db_result = session.execute(sql)
-    for row in db_result:
-        for r in result:
-            if r['id'] == row[0]:
-                r['totalPeople'] = row[2]
-            else:
-                r['totalPeople'] = 0
+    db_result = list(db_result)
+    result = []
+    for station in stations:
+        temp = None
+        for s in db_result:
+            if station.id == s[0]:
+                temp = station.serialize()
+                temp['totalPeople'] = s[2]
+        if temp is None:
+            temp = station.serialize()
+            temp['totalPeople'] = 0
+        result.append(temp)
 
     return jsonify({"data": result})
 
@@ -99,7 +106,7 @@ def get_total_people():
 @view.route("/api/score/", methods=['GET'])
 def get_score():
     '''
-    LOWER SCORE WIN !!!
+    LOWER SCORED UUID WINS !!!
     :return:
     score
     '''
@@ -124,13 +131,19 @@ def get_score():
         Skiipass.departure_time < (day + timedelta(days=1))).all()
 
     result = {}
+    skipass_record_counter = {}
     for record in skipass_records:
         if record.uuid in result:
             result[record.uuid] += int(
                 (record.departure_time - record.arrival_time).total_seconds() * record.total_people)
+            skipass_record_counter[record.uuid] += 1
         else:
             result[record.uuid] = int(
                 (record.departure_time - record.arrival_time).total_seconds() * record.total_people)
+            skipass_record_counter[record.uuid] = 1
+
+    for r in result:
+        result[r] /= skipass_record_counter[r]
 
     #only the bests
     bests =sorted(result, key=result.get, reverse=False)[:3]
