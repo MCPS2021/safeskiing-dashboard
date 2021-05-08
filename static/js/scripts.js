@@ -52,7 +52,6 @@ $(document).ready(function() {
     });
 
 } );
-
 var map = L.map('map').setView([51.505, -0.09], 13);
 L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
 
@@ -63,11 +62,21 @@ function render_progressbar(value, x, obj){
 function render_text(value, x, obj){
     let color = "green";
     if (value > obj.danger_threshold){
-        color = "red"
+        color = "red";
     } else if (value > obj.warning_threshold){
         color = "yellow"
     }
+    (color === "red") ? alert_manager(obj.id, true) : alert_manager(obj.id, false);
     return '<span class="'+color+'">'+value+'</span>';
+}
+
+function alert_manager(station, display){
+    let alert = $('#alert_station_'+station);
+    if (display && alert.length === 0){
+        $("#alerts").append('<div class="alert alert-warning" id="alert_station_'+station+'">Station '+station+' is <strong>too crowded</strong>!\n</div>');
+    } else if (display === false && alert.lenght !== 0){
+        alert.remove();
+    }
 }
 
 function get_color(value){
