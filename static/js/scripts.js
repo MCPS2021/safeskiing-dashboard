@@ -1,4 +1,22 @@
 $(document).ready(function() {
+    $.ajax({
+        url:"api/cards",
+        type: "GET",
+        success: (data) => {
+            $('#card-station-number').text(data['stations'])
+            $('#card-low-battery').text(data['low_battery_devices'])
+            $('#card-lifts').text(data['lifts'])
+            $('#card-users').text(data['users'])
+        },
+        error: (xhr, data) => {
+            console.log(data)
+            $('#card-station-number').text("No data")
+            $('#card-low-battery').text("No data")
+            $('#card-lifts').text("No data")
+            $('#card-users').text("No data")
+        }
+    })
+
     $('#devices').DataTable({
         ajax: "api/skipass",
         columns: [
