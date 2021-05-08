@@ -52,6 +52,7 @@ $(document).ready(function() {
     });
 
 } );
+var markers = [];
 var map = L.map('map').setView([51.505, -0.09], 13);
 L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
 
@@ -69,7 +70,9 @@ function render_text(value, x, obj){
     } else if (value > obj.warning_threshold){
         color = "yellow"
     }
+    //other things
     (color === "red") ? alert_manager(obj.id, true) : alert_manager(obj.id, false);
+    addToMap(obj.lat, obj.lon);
     return '<span class="'+color+'">'+value+'</span>';
 }
 
@@ -80,6 +83,13 @@ function alert_manager(station, display){
     } else if (display === false && alert.lenght !== 0){
         alert.remove();
     }
+}
+
+function addToMap(lat, lon){
+    let marker = L.marker([lat, lon]).addTo(map);
+    markers.push(marker);
+    let group = new L.featureGroup(markers);
+    map.fitBounds(group.getBounds());
 }
 
 function get_color(value){
