@@ -11,6 +11,7 @@
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="/static/css/styles.css" rel="stylesheet" />
         <link href="/static/css/app.css" rel="stylesheet" />
+        <link href="/static/css/podium.css" rel="stylesheet" />
         <link rel="stylesheet" type="text/css" href="/static/vendor/DataTables/DataTables-1.10.24/css/jquery.dataTables.min.css"/>
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
@@ -94,35 +95,6 @@
                             <th>Battery</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>218397102923</td>
-                            <td>Station 01</td>
-                            <td class="green">100%
-                                <div class="progress">
-                                    <div class="progress-bar" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2183973488321</td>
-                            <td>Station 02</td>
-                            <td class="red">15%
-                                <div class="progress">
-                                    <div class="progress-bar" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>218393453827</td>
-                            <td>Station 02</td>
-                            <td class="yellow">55%
-                                <div class="progress">
-                                    <div class="progress-bar" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
                 </table>
             </div>
             <div class="row pt-5">
@@ -152,12 +124,58 @@
 				</div>
             </div>
             <div class=" pt-5">
-                <h2>COVID-Safe Ranking</h2>
-                <ol>
-                    <li>#2183973488321  -  105pts</li>
-                    <li>#218397102923  -  98pts</li>
-                    <li>#218393453827  -  55pts</li>
-                </ol>
+                <h2>Current Today Winners</h2>
+                <section id="team" class="pb-5">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                <div class="image-flip" >
+                                    <div class="mainflip flip-0">
+                                        <div class="frontside">
+                                            <div class="card">
+                                                <div class="card-body text-center">
+                                                    <p><img class=" img-fluid" src="static/assets/1.png" alt="card image"></p>
+                                                    <h4 class="card-title">No Data</h4>
+                                                    <p class="card-text"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                <div class="image-flip">
+                                    <div class="mainflip">
+                                        <div class="frontside">
+                                            <div class="card">
+                                                <div class="card-body text-center">
+                                                    <p><img class=" img-fluid" src="static/assets/2.png" alt="card image"></p>
+                                                    <h4 class="card-title">No Data</h4>
+                                                    <p class="card-text"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                <div class="image-flip">
+                                    <div class="mainflip">
+                                        <div class="frontside">
+                                            <div class="card">
+                                                <div class="card-body text-center">
+                                                    <p><img class=" img-fluid" src="static/assets/3.png" alt="card image"></p>
+                                                    <h4 class="card-title">No Data</h4>
+                                                    <p class="card-text"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
         <!-- Bootstrap core JS-->

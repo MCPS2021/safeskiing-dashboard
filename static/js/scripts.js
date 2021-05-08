@@ -1,7 +1,6 @@
 $(document).ready(function() {
     $.ajax({
         url:"api/cards",
-        type: "GET",
         success: (data) => {
             $('#card-station-number').text(data['stations'])
             $('#card-low-battery').text(data['low_battery_devices'])
@@ -15,7 +14,7 @@ $(document).ready(function() {
             $('#card-lifts').text("No data")
             $('#card-users').text("No data")
         }
-    })
+    });
 
     $('#devices').DataTable({
         ajax: "api/skipass",
@@ -32,6 +31,20 @@ $(document).ready(function() {
         order: [[1, "desc"]]
     });
 
+    //podium
+    $.ajax({
+        url:"api/score",
+        success: (data) => {
+            let titles = $('.card-title');
+            let texts = $('.card-text');
+            let i = 0;
+            Object.keys(data).forEach(function(key){
+                texts.eq(i).text(data[key]);
+                titles.eq(i).text(key);
+                i++;
+            });
+        }
+    });
 
 } );
 
