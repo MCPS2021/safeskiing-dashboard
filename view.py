@@ -132,9 +132,15 @@ def get_score():
             result[record.uuid] = int(
                 (record.departure_time - record.arrival_time).total_seconds() * record.total_people)
 
-    current_app.logger.debug(result)
+    #only the bests
+    bests =sorted(result, key=result.get, reverse=False)[:3]
+    sorted_result = {}
+    for best in bests:
+        sorted_result[best] = result[best]
 
-    return jsonify(result)
+
+    current_app.logger.debug(sorted_result)
+    return jsonify(sorted_result)
 
 @view.route("/api/cards", methods=['GET'])
 def cards_constructor():
