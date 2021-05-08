@@ -27,6 +27,11 @@ $(document).ready(function() {
         order: [[2, "asc"]]
     });
     $('#stations').DataTable({
+        ajax: "api/stations",
+        columns: [
+            { data: "id", render: function(d) {return "Station " + d}},
+            { data: "totalPeople", render: render_text}
+        ],
         searching: false,
         order: [[1, "desc"]]
     });
@@ -51,8 +56,18 @@ $(document).ready(function() {
 var map = L.map('map').setView([51.505, -0.09], 13);
 L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
 
-function render_progressbar(value, x, y){
+function render_progressbar(value, x, obj){
     return '<span class="'+get_color(value) + '">'+value+'%<div class="progress"><div class="progress-bar" role="progressbar" style="width: '+value+'%" aria-valuenow="'+value+'" aria-valuemin="0" aria-valuemax="100"></div></div></span>';
+}
+
+function render_text(value, x, obj){
+    let color = "green";
+    if (value > obj.danger_threshold){
+        color = "red"
+    } else if (value > obj.warning_threshold){
+        color = "yellow"
+    }
+    return '<span class="'+color+'">'+value+'</span>';
 }
 
 function get_color(value){

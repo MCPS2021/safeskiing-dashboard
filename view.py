@@ -44,7 +44,7 @@ def get_all_stations():
             else:
                 r['totalPeople'] = 0
 
-    return jsonify(result)
+    return jsonify({"data": result})
 
 @view.route("/api/totalPeople/", methods=['GET'])
 def get_total_people():
