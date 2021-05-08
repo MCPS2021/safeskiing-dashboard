@@ -1,7 +1,8 @@
 from flask import Flask
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 
+from database import Stations
 from view import view
 
 
@@ -23,6 +24,15 @@ def create_app():
 
 
     app.register_blueprint(view)
+
+    # try db connection
+    session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
+    try:
+        session.query(Stations).all()
+    except:
+        app.logger.error("Can not connect to database! Exiting now")
+        exit(1)
+
 
     return app
 
