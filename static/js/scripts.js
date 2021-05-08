@@ -56,6 +56,9 @@ var map = L.map('map').setView([51.505, -0.09], 13);
 L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'}).addTo(map);
 
 function render_progressbar(value, x, obj){
+    if (value === '-1'){
+        return '<span class="red">no data </span>'
+    }
     return '<span class="'+get_color(value) + '">'+value+'%<div class="progress"><div class="progress-bar" role="progressbar" style="width: '+value+'%" aria-valuenow="'+value+'" aria-valuemin="0" aria-valuemax="100"></div></div></span>';
 }
 
