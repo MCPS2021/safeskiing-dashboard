@@ -19,7 +19,7 @@ def create_app():
     engine = create_engine("mysql+pymysql://" +
                        "root" + ":" +
                        "root" + "@" +
-                       "127.0.0.1:3308" + "/" +
+                       "safeskiing-db:3306" + "/" +
                        "safeskiing" + "?charset=utf8mb4")
 
 
@@ -29,8 +29,9 @@ def create_app():
     test_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
     try:
         test_session.query(Stations).all()
-    except:
+    except Exception as e:
         app.logger.error("Can not connect to database! Exiting now")
+        app.logger.error(e)
         exit(1)
 
     @app.teardown_appcontext
