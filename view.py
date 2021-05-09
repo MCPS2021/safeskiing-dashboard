@@ -28,6 +28,9 @@ def get_all_skipass():
     ret = [skipass.serialize() for skipass in
                     session.query(LastUpdate).filter(LastUpdate.last_update > day).filter(
                         LastUpdate.last_update < day + timedelta(days=1)).all()]
+    for r in ret:
+        r['last_battery'] = int(int(r['last_battery']) * 100 / 255)
+
     return jsonify({"data": ret})
 
 
