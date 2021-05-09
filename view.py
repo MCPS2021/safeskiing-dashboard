@@ -43,7 +43,7 @@ def get_all_stations():
     for station in stations:
         temp = None
         for s in db_result:
-            if station.id == s[0]:
+            if station.id == s[0] and s[1].date() >= date.today():
                 temp = station.serialize()
                 temp['totalPeople'] = s[2]
         if temp is None:
@@ -158,7 +158,7 @@ def get_score():
 @view.route("/api/cards", methods=['GET'])
 def cards_constructor():
     stations = session.query(Stations).count()
-    low_battery_devices = session.query(LastUpdate).filter(LastUpdate.last_battery < 40).count()
+    low_battery_devices = session.query(LastUpdate).filter(LastUpdate.last_battery < 40).filter(LastUpdate.last_battery != -1).count()
     lifts = session.query(Skiipass).filter(Skiipass.departure_time > date.today()).filter(Skiipass.departure_time < date.today() + timedelta(days=1)).count()
     users = session.query(LastUpdate).filter(LastUpdate.last_update > date.today()).filter(LastUpdate.last_update < date.today() + timedelta(days=1)).count()
     return jsonify({"stations":stations, "low_battery_devices": low_battery_devices, "lifts": lifts, "users":users})
