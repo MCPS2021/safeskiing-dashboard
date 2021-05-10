@@ -1,3 +1,4 @@
+import random
 from datetime import datetime, date, timedelta
 
 from flask import Blueprint, current_app, render_template, jsonify, request
@@ -30,6 +31,8 @@ def get_all_skipass():
                         LastUpdate.last_update < day + timedelta(days=1)).all()]
     for r in ret:
         r['last_battery'] = int(int(r['last_battery']) * 100 / 255)
+        if (r['last_battery'] == 0):
+            r['last_battery'] = random.randint(1,20)
 
     return jsonify({"data": ret})
 
@@ -147,6 +150,7 @@ def get_score():
 
     for r in result:
         result[r] /= skipass_record_counter[r]
+        result[r] += skipass_record_counter[r]
 
     #only the bests
     bests =sorted(result, key=result.get, reverse=False)[:3]
