@@ -9,7 +9,7 @@ import string
 engine = create_engine("mysql+pymysql://" +
                        "root" + ":" +
                        "root" + "@" +
-                       "127.0.0.1:3308" + "/" +
+                       "safeskiing-db:3306" + "/" +
                        "safeskiing" + "?charset=utf8mb4")
 Base = declarative_base()
 
